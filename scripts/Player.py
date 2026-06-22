@@ -1,6 +1,6 @@
 import pygame.key
 
-from scripts.Consts import ENTITY_SPEED
+from scripts.Consts import ENTITY_SPEED, WIN_HEIGHT
 from scripts.Entity import Entity
 
 
@@ -14,6 +14,11 @@ class Player(Entity):
         self.img_parado_esquerda = pygame.transform.flip(self.img_parado, True, False)
         self.olhando_direita = True
         self.contador = 0
+        self.pulo = False
+        self.caindo = False
+        self.pos_y_chao = position[1]
+        self.altura_max = self.pos_y_chao - 100
+        self.andando = ENTITY_SPEED[self.name]
 
     def move(self):
         pressed_key = pygame.key.get_pressed()
@@ -27,6 +32,22 @@ class Player(Entity):
             andando = True
             self.olhando_direita = False
             self.rect.x -= ENTITY_SPEED[self.name]
+
+        if pressed_key[pygame.K_SPACE] and not self.pulo and not self.caindo:
+            self.pulo = True
+
+        if self.pulo:
+            self.rect.centery -= ENTITY_SPEED[self.name]
+            if self.rect.centery <= self.altura_max:
+                self.pulo = False
+                self.caindo = True
+                print("Caindooo")
+
+        elif self.caindo:
+            self.rect.centery += ENTITY_SPEED[self.name]
+            if self.rect.centery >= self.pos_y_chao:
+                self.rect.y = self.pos_y_chao
+                self.caindo = False
 
         if andando:
             self.contador += 0.1
