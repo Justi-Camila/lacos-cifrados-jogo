@@ -22,7 +22,10 @@ ENTITY_SPEED = {
     "LevelBg5": 6,
     "LevelBg6": 7,
     "LevelBg7": 8,
-    "Paper": 0
+    "Paper": 0,
+    "Jail": 0,
+    "NPC1": 0,
+    "NPC2": 0
 }
 
 ENTITY_DAMAGE = {
@@ -37,8 +40,11 @@ ENTITY_DAMAGE = {
     "Player": 0,
     "Assassin": 3,
     "Spider": 1,
-    "Trap": 1,
-    "Paper": 0
+    "Trap": 0,
+    "Paper": 0,
+    "Jail": 0,
+    "NPC1": 0,
+    "NPC2": 0
 }
 
 ENTITY_HEALTH = {
@@ -54,7 +60,10 @@ ENTITY_HEALTH = {
     "Assassin": 20,
     "Spider": 10,
     "Trap": 999,
-    "Paper": 999
+    "Paper": 999,
+    "Jail": 999,
+    "NPC1": 999,
+    "NPC2": 999,
 }
 
 

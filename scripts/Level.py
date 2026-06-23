@@ -1,7 +1,7 @@
 import sys
 
 import pygame.time
-from pygame import Surface, Rect
+from pygame import Surface, Rect, K_BACKSPACE
 from pygame.font import Font
 
 from scripts.Background import Background
@@ -9,6 +9,8 @@ from scripts.Consts import WIN_WIDTH, ENTITY_SPEED, WIN_HEIGHT, FONT_PATH, CUTSC
 from scripts.Entity import Entity
 from scripts.EntityFactory import EntityFactory
 from scripts.EntityMediator import EntityMediator
+from scripts.Jail import Jail
+from scripts.NPC import NPC
 from scripts.Paper import Paper
 from scripts.Player import Player
 from scripts.Trap import Trap
@@ -32,6 +34,12 @@ class Level:
         traps = EntityFactory.get_entity("Trap")
         self.entity_list.extend(traps)
 
+        jail = EntityFactory.get_entity("Jail")
+        self.entity_list.append(jail)
+
+        npc = EntityFactory.get_entity("NPC")
+        self.entity_list.extend(npc)
+
         self.camera_x = 0
         self.camera_y = 0
         self.em_cutscene = True
@@ -41,22 +49,24 @@ class Level:
         self.npc_2 = pygame.image.load("./assets/images/NPC2.png").convert_alpha()
         self.badending = pygame.image.load("./assets/images/badending.png").convert_alpha()
         self.badend = False
-        self.papel_aberto = None
+        self.papel_aberto = False
+        self.resposta = ""
+        self.enigma_resolvido = False
+        self.enigma_aberto = False
 
     def run(self):
         clock = pygame.time.Clock()
 
-        player = next((ent for ent in self.entity_list if isinstance(ent, Player)), None)
-
         while True:
             clock.tick(60)
+
+            player = next((ent for ent in self.entity_list if isinstance(ent, Player)), None)
 
             if self.em_cutscene:
                 self.camera_x = 0
             else:
                 if player is None:
                     self.badend = True
-
                 else:
                     self.camera_x = player.rect.x - (WIN_WIDTH / 5)
 
@@ -79,18 +89,27 @@ class Level:
                     self.window.blit(ent.surf, (tela_x - WIN_WIDTH, ent.rect.y))
                     self.window.blit(ent.surf, (tela_x + WIN_WIDTH, ent.rect.y))
 
-                elif isinstance(ent, (Trap, Paper)):
+                elif isinstance(ent, (Trap, Paper, Jail, NPC)):
                     tela_x = ent.rect.x - self.camera_x
 
-                    if -64 < tela_x < WIN_WIDTH + 64:
+                    if -ent.rect.width < tela_x < WIN_WIDTH + 64:
                         self.window.blit(ent.surf, (tela_x, ent.rect.y))
 
                     if isinstance(ent, Paper) and player and not self.em_cutscene and not self.badend and not self.papel_aberto:
                         if player.rect.colliderect(ent.rect):
                             pos_x = tela_x + (ent.rect.width / 2)
-                            pos_y = ent.rect.y - 20
+                            pos_y = ent.rect.y - 40
 
-                            self.text(15, "Aperte E para ler", C_BLACK, (pos_x, pos_y))
+                            self.text(20, "Aperte E para ler", C_WHITE, (pos_x, pos_y))
+
+                    if isinstance(ent, Jail) and player and not self.em_cutscene and not self.badend and not self.papel_aberto and not self.enigma_resolvido:
+
+                        if player.rect.colliderect(ent.rect):
+                            pos_x = tela_x + (ent.rect.width / 2)
+                            pos_y = ent.rect.y - 40
+
+                            self.text(20, "Aperte E para interagir", C_WHITE, (pos_x, pos_y))
+
 
             if self.em_cutscene:
                 self.window.blit(self.campfire, (0, 0))
@@ -113,6 +132,15 @@ class Level:
                 pygame.draw.rect(self.window, C_BLACK, (x_caixa, y_caixa, largura, altura))
                 self.text(14, self.papel_aberto, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2))
 
+            if self.enigma_aberto:
+                largura, altura = 500, 150
+                x_caixa = (WIN_WIDTH - largura) / 2
+                y_caixa = (WIN_HEIGHT - altura) / 2
+                pygame.draw.rect(self.window, C_BLACK, (x_caixa, y_caixa, largura, altura))
+                self.text(14, self.enigma_aberto, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2))
+                self.text(14, self.resposta, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50))
+
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -127,8 +155,9 @@ class Level:
                     if event.key == pygame.K_ESCAPE and self.badend:
                         return
 
+                    # Evento de teclado do papel
                     if (event.key == pygame.K_e or event.key == pygame.K_ESCAPE) and self.papel_aberto:
-                            self.papel_aberto = None
+                            self.papel_aberto = False
 
                     elif event.key == pygame.K_e and not self.papel_aberto:
                         if player:
@@ -136,6 +165,31 @@ class Level:
                                 if isinstance(ent, Paper):
                                     if player.rect.colliderect(ent.rect):
                                         self.papel_aberto = ent.text
+
+                    #Evento de teclado do enigma
+                    if self.enigma_aberto:
+                        if event.key == pygame.K_e or event.key == pygame.K_ESCAPE:
+                            self.enigma_aberto = False
+                        elif event.key == K_BACKSPACE:
+                            self.resposta = self.resposta[:-1]
+                        elif event.key == pygame.K_RETURN:
+                            if self.resposta.strip().lower() == "philia":
+                                self.enigma_resolvido = True
+                                print("Acertou")
+                            else:
+                                print("resposta errada")
+                                self.resposta = ""
+                        else:
+                            if len(self.resposta) < 6:
+                                self.resposta += event.unicode
+
+                    elif event.key == pygame.K_e and not self.enigma_aberto:
+                        if player:
+                            for ent in self.entity_list:
+                                if isinstance(ent, Jail):
+                                    if player.rect.colliderect(ent.rect):
+                                        self.enigma_aberto = ent.text
+
 
 
             self.text(14, f"fps: {clock.get_fps():.0f}", C_WHITE, (100, WIN_HEIGHT - 35))

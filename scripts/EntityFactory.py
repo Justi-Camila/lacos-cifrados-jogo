@@ -2,6 +2,8 @@ import random
 
 from scripts.Background import Background
 from scripts.Consts import WIN_WIDTH, WIN_HEIGHT
+from scripts.Jail import Jail
+from scripts.NPC import NPC
 from scripts.Player import Player
 from scripts.Paper import Paper
 from scripts.Trap import Trap
@@ -24,14 +26,14 @@ class EntityFactory:
             case "Paper":
                 list_papers = []
                 list_text = [
-                    "Primeira Pista",
-                    "Segunda Pista"
+                    "PHILIA",
+                    "CIFRA DE CÉSAR +3"
                 ]
                 posicao_x = 900
                 for i in range(2):
                     novo_paper = Paper("Paper", (posicao_x, 390), list_text[i])
                     list_papers.append(novo_paper)
-                    posicao_x += 4100
+                    posicao_x += 7900
                 return list_papers
             case "Trap":
                 list_traps = []
@@ -43,4 +45,14 @@ class EntityFactory:
                     list_traps.append(nova_trap)
                     ponteiro_x = x_desta_trap + 250
                 return list_traps
+            case "Jail":
+                return Jail("Jail", (9000, 160), "Digite a resposta")
+            case "NPC":
+                posicao = 9060
+                lista = []
+                for i in range(2):
+                    novo = NPC(f"NPC{i + 1}", (posicao, 370))
+                    lista.append(novo)
+                    posicao += 120
+                return lista
         return None
