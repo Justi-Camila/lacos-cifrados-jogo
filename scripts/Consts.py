@@ -10,7 +10,7 @@ CUTSCENE = (
 
 #E
 ENTITY_SPEED = {
-    "Player": 6,
+    "Player": 15,
     "Assassin": 4,
     "Spider": 3,
     "Trap": 0,
@@ -74,6 +74,9 @@ FONT_PATH = "./assets/font/BillJilly.ttf"
 #M
 MENU_OPTION = ("NOVO JOGO",
                "SAIR")
+
+#P
+PUZZLE = "philia"
 
 #T
 TUTORIAL = ("A - ESQUERDA",

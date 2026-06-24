@@ -1,7 +1,7 @@
 import pygame.key
 
-from scripts.Consts import ENTITY_SPEED, WIN_HEIGHT
-from scripts.Entity import Entity
+from scripts.Consts import ENTITY_SPEED, WIN_HEIGHT, C_WHITE
+from scripts.Entity import Entity, text_game
 
 
 class Player(Entity):
@@ -64,5 +64,10 @@ class Player(Entity):
 
         if self.rect.x < 0:
             self.rect.x = 0
+
+
+    def render(self, window, camera_x, player=None):
+        text_game(window,14, f"Player - Health {self.health}", C_WHITE, (80, 20))
+        window.blit(self.surf, (self.rect.x - camera_x, self.rect.y))
 
 
