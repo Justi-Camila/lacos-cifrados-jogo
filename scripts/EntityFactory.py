@@ -29,14 +29,15 @@ class EntityFactory:
             case "Paper":
                 list_papers = []
                 list_text = [
+                    "Se quiser ver suas amigas inteiras novamente, \ndecifre o caminho. O relógio já está correndo. Não tente nos seguir.",
                     "PHILIA",
                     "CIFRA DE CÉSAR +3"
                 ]
-                posicao_x = 900
+                posicao_x = 550
                 for i in range(2):
                     novo_paper = Paper("Paper", (posicao_x, 390), list_text[i])
                     list_papers.append(novo_paper)
-                    posicao_x += 7900
+                    posicao_x += 3000
                 return list_papers
 
             case "Trap":
@@ -53,7 +54,7 @@ class EntityFactory:
             case "Spider":
                 list_spiders = []
                 ponteiro_x = 700
-                for i in range(10):
+                for i in range(18):
                     posicao_aleatoria = random.randint(0, 200)
                     x_desta_trap = ponteiro_x + posicao_aleatoria
                     nova_trap = Spider("Spider", (x_desta_trap, 390))
@@ -62,7 +63,7 @@ class EntityFactory:
                 return list_spiders
 
             case "Jail":
-                return Jail("Jail", (9000, 160), "Digite a resposta")
+                return Jail("Jail", (9000, 160), "Digite a resposta (encontre as pistas nos papéis)")
 
             case "NPC":
                 list_npc = []

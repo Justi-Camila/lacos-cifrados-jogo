@@ -55,9 +55,14 @@ class Level:
         self.resposta = ""
         self.enigma_resolvido = False
         self.enigma_aberto = False
+        self.fonte_dialogo = pygame.font.Font(FONT_PATH, 15)
+        self.mostrar_erro = False
 
     def run(self):
         clock = pygame.time.Clock()
+        pygame.mixer.music.load("./assets/audio/ambient-camp.mp3")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
 
         while True:
             clock.tick(60)
@@ -88,18 +93,21 @@ class Level:
 
             if self.em_cutscene:
                 self.window.blit(self.campfire, (0, 0))
-                self.window.blit(self.npc_1, (WIN_WIDTH / 2 - 60, WIN_HEIGHT / 2 + 100))
-                self.window.blit(self.npc_2, (WIN_WIDTH / 2 + 30, WIN_HEIGHT / 2 + 100))
+                if self.contagem < 9:
+                    self.window.blit(self.npc_1, (WIN_WIDTH / 2 - 60, WIN_HEIGHT / 2 + 100))
+                    self.window.blit(self.npc_2, (WIN_WIDTH / 2 + 30, WIN_HEIGHT / 2 + 100))
+
                 rect = pygame.draw.rect(self.window, C_BLACK, (70, 70, 400, 100))
+
                 if self.contagem < len(CUTSCENE):
-                    self.text(12, CUTSCENE[self.contagem], C_WHITE, rect.center)
+                    self.desenhar_texto(CUTSCENE[self.contagem], rect, self.fonte_dialogo, C_WHITE)
+
 
             if self.badend:
                 self.window.blit(self.badending, (0, 0))
                 self.text(22, "GAME", C_WHITE, (WIN_WIDTH / 2, 70))
                 self.text(22, "OVER", C_WHITE, (WIN_WIDTH / 2, 120))
                 self.text(15, "Aperte ESC para recomeçar", C_WHITE, (WIN_WIDTH/ 2, WIN_HEIGHT / 2 + 150))
-
 
             if self.goodend:
                 self.window.blit(self.goodending, (0, 0))
@@ -111,7 +119,10 @@ class Level:
                 x_caixa = (WIN_WIDTH - largura) / 2
                 y_caixa = (WIN_HEIGHT - altura) / 2
                 pygame.draw.rect(self.window, C_BLACK, (x_caixa, y_caixa, largura, altura))
-                self.text(14, self.papel_aberto, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2))
+                linhas = self.papel_aberto.split('\n')
+                y_inicial = (WIN_HEIGHT / 2) - ((len(linhas) - 1) * 12)
+                for i, linha in enumerate(linhas):
+                    self.text(14, linha, C_WHITE, (WIN_WIDTH / 2, y_inicial + (i * 22)))
 
             if self.enigma_aberto:
                 largura, altura = 500, 150
@@ -119,8 +130,11 @@ class Level:
                 y_caixa = (WIN_HEIGHT - altura) / 2
                 pygame.draw.rect(self.window, C_BLACK, (x_caixa, y_caixa, largura, altura))
                 self.text(14, self.enigma_aberto, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2))
-                self.text(14, self.resposta, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50))
 
+                if self.mostrar_erro:
+                    self.text(12, "Senha incorreta, tente novamente!!! (Aperte qualquer letra)", C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50))
+                else:
+                    self.text(14, self.resposta, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -130,8 +144,30 @@ class Level:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_e and self.em_cutscene:
                         self.contagem += 1
+
+                        # Gerenciando os áudios da cutscene dependendo do diálogo
+                        if self.contagem == 5:
+                            pygame.mixer.music.stop()
+                            explosion = pygame.mixer.Sound("./assets/audio/explosion.mp3")
+                            explosion.set_volume(0.7)
+                            explosion.play()
+
+                        elif self.contagem == 6:
+                            pygame.mixer.music.stop()
+                            suspense = pygame.mixer.Sound("./assets/audio/suspense.mp3")
+                            suspense.set_volume(0.7)
+                            suspense.play()
+
+                        elif self.contagem == 9:
+                            scream = pygame.mixer.Sound("./assets/audio/scream.mp3")
+                            scream.set_volume(0.7)
+                            scream.play()
+
                         if self.contagem >= len(CUTSCENE):
                             self.em_cutscene = False
+                            pygame.mixer.music.stop()
+                            pygame.mixer.music.load("./assets/audio/ambient-game.mp3")
+                            pygame.mixer.music.play(-1)
 
                     if event.key == pygame.K_ESCAPE and self.badend or self.goodend:
                         return
@@ -152,6 +188,7 @@ class Level:
                         if event.key == pygame.K_e or event.key == pygame.K_ESCAPE:
                             self.enigma_aberto = False
                         elif event.key == K_BACKSPACE:
+                            self.mostrar_erro = False
                             self.resposta = self.resposta[:-1]
                         elif event.key == pygame.K_RETURN:
                             if self.resposta.strip().lower() == PUZZLE:
@@ -160,10 +197,11 @@ class Level:
                                 self.goodend = True
                                 print("Acertou")
                             else:
-                                print("resposta errada")
+                                self.mostrar_erro = True
                                 self.resposta = ""
                         else:
                             if len(self.resposta) < 6:
+                                self.mostrar_erro = False
                                 self.resposta += event.unicode
 
                     elif event.key == pygame.K_e and not self.enigma_aberto:
@@ -172,7 +210,6 @@ class Level:
                                 if isinstance(ent, Jail):
                                     if player.rect.colliderect(ent.rect):
                                         self.enigma_aberto = ent.text
-
 
 
             self.text(14, f"fps: {clock.get_fps():.0f}", C_WHITE, (100, WIN_HEIGHT - 35))
@@ -187,3 +224,24 @@ class Level:
         text_surf: Surface = text_font.render(text, True, text_color).convert_alpha()
         text_rect: Rect = text_surf.get_rect(center=text_center_pos)
         self.window.blit(source=text_surf, dest=text_rect)
+
+    def desenhar_texto(self, text, rect, font, color):
+        words = text.split(' ')
+        lines = []
+        linha_atual = ""
+        padding = 25
+
+        for word in words:
+            test_line = linha_atual + word + " "
+            if font.size(test_line)[0] < (rect.width - padding * 2):
+                linha_atual = test_line
+            else:
+                lines.append(linha_atual)
+                linha_atual = word + " "
+        lines.append(linha_atual)
+
+        y_offset = rect.top + padding
+        for line in lines:
+            text_surf = font.render(line.strip(), True, color)
+            self.window.blit(text_surf, (rect.left + padding, y_offset))
+            y_offset += font.get_linesize() + 10

@@ -81,7 +81,7 @@ MENU_OPTION = ("NOVO JOGO",
                "SAIR")
 
 #P
-PUZZLE = "philia"
+PUZZLE = "sklold"
 
 #T
 TUTORIAL = ("A - ESQUERDA",

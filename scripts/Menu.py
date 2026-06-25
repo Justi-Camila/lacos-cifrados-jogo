@@ -14,6 +14,8 @@ class Menu:
 
     def run(self):
         menu_option = 0
+        pygame.mixer.music.load("./assets/audio/menu.mp3")
+        pygame.mixer_music.play(-1)  # -1 para a musica rodar infinitamente
 
         while True:
             self.window.blit(source=self.surf, dest=self.rect)
