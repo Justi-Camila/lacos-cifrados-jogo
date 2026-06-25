@@ -3,16 +3,23 @@ C_WHITE = (255, 255, 255)
 C_PURPLE = (213, 182, 255)
 C_BLACK = (0, 0, 0)
 CUTSCENE = (
-    "AAAAAAAAAAAAAAAAAAAAAA",
-    "BBBBBBBBBBBBBBBBBBBBBBB",
-    "CCCCCCCCCCCCCCCCCCCCCCC"
+    "Camila - Ai ai... Que bom que finalmente tiramos um tempo livre para relaxar e ficarmos juntas.",
+    "Gabi - SIM!!! Fazia tanto tempo que não fazíamos isso. É tão bom quando a gente se junta!",
+    "Millena - Exatamente! E esse lugar é incrível... Essa fogueira que montamos ficou maravilhosa.",
+    "Camila - Mas enfim, como está o trabalho de vocês? Como está sendo trabalhar juntas?",
+    "Gabi - Ahh, está tudo maravilhoso, ainda mais---",
+    "? - BAAAAAAAAAAAAMMMMMMMMMMM",
+    "Millena - O que foi isso?! Veio de trás das árvores!",
+    "Camila - Calma! Deixem que eu vou verificar. Fiquem aqui perto da fogueira!",
+    "Gabi - Não mesmo, eu vou junto com você!",
+    "Camila e Gabi - AAAAAAAAAAAAAAAAAAAHHHHHHHHHH",
+    "Millena - Meninas, cade vocês????",
 )
 
 #E
 ENTITY_SPEED = {
-    "Player": 15,
-    "Assassin": 4,
-    "Spider": 3,
+    "Player": 6,
+    "Spider": 1,
     "Trap": 0,
     "LevelBg0": 0,
     "LevelBg1": 2,
@@ -38,9 +45,8 @@ ENTITY_DAMAGE = {
     "LevelBg6": 0,
     "LevelBg7": 0,
     "Player": 0,
-    "Assassin": 3,
     "Spider": 1,
-    "Trap": 0,
+    "Trap": 1,
     "Paper": 0,
     "Jail": 0,
     "NPC1": 0,
@@ -57,8 +63,7 @@ ENTITY_HEALTH = {
     "LevelBg6": 999,
     "LevelBg7": 999,
     "Player": 15,
-    "Assassin": 20,
-    "Spider": 10,
+    "Spider": 999,
     "Trap": 999,
     "Paper": 999,
     "Jail": 999,

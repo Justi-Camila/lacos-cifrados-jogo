@@ -1,5 +1,8 @@
+import pygame.time
+
 from scripts.Entity import Entity
 from scripts.Player import Player
+from scripts.Spider import Spider
 from scripts.Trap import Trap
 
 
@@ -19,16 +22,27 @@ class EntityMediator:
             valid_interaction = True
         elif isinstance(ent1, Trap) and isinstance(ent2, Player):
             valid_interaction = True
+        elif isinstance(ent1, Player) and isinstance(ent2, Spider):
+            valid_interaction = True
+        elif isinstance(ent1, Spider) and isinstance(ent2, Player):
+            valid_interaction = True
 
         if valid_interaction:
             if (ent1.rect.right >= ent2.rect.left and
                     ent1.rect.left <= ent2.rect.right and
                     ent1.rect.bottom >= ent2.rect.top and
                     ent1.rect.top <= ent2.rect.bottom):
-                ent1.health -= ent2.damage
-                ent2.health -= ent1.damage
-                ent1.last_dmg = ent2.name
-                ent2.last_dmg = ent1.name
+
+                # Aplica o cooldown de dano para evitar perda de vida consecutiva em frames seguidos
+                tempo_atual = pygame.time.get_ticks()
+                if tempo_atual > ent1.imune and ent2.damage > 0:
+                    ent1.health -= ent2.damage
+                    ent1.last_dmg = ent2.name
+                    ent1.imune = tempo_atual + 1000
+                if tempo_atual > ent2.imune and ent1.damage > 0:
+                    ent2.health -= ent1.damage
+                    ent2.last_dmg = ent1.name
+                    ent2.imune = tempo_atual + 1000
 
     @staticmethod
     def verify_collision(entity_list: list[Entity]):

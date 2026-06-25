@@ -20,7 +20,7 @@ class Jail(Entity):
         if -self.rect.width < tela_x < WIN_WIDTH + 64:
             window.blit(self.surf, (tela_x, self.rect.y))
 
-        if player.rect.colliderect(self.rect):
+        if player and player.rect.colliderect(self.rect):
             pos_x = tela_x + (self.rect.width / 2)
             pos_y = self.rect.y - 40
 

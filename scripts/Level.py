@@ -37,6 +37,9 @@ class Level:
         npc = EntityFactory.get_entity("NPC")
         self.entity_list.extend(npc)
 
+        spider = EntityFactory.get_entity("Spider")
+        self.entity_list.extend(spider)
+
         self.camera_x = 0
         self.camera_y = 0
         self.em_cutscene = True
