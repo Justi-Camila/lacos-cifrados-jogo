@@ -28,7 +28,7 @@ class Menu:
                     self.menu_text(30, MENU_OPTION[i], C_WHITE, ((WIN_WIDTH / 2), 220 + 40 * i))
 
             for i in range(len(TUTORIAL)):
-                self.tutorial_text(10, TUTORIAL[i], C_PURPLE, ((WIN_WIDTH / 5), 200 + 25 * i))
+                self.tutorial_text(10, TUTORIAL[i], C_PURPLE, ((WIN_WIDTH / 9), 200 + 25 * i))
 
             pygame.display.flip()
 
@@ -60,9 +60,8 @@ class Menu:
         self.window.blit(source=text_surf, dest=text_rect)
 
 
-    # Define o ponto de ancoragem no canto inferior direito, o texto se expande para a esquerda.
-    def tutorial_text(self, text_size: int, text: str, text_color: tuple, text_right_pos: tuple):
+    def tutorial_text(self, text_size: int, text: str, text_color: tuple, text_topleft_pos: tuple):
         text_font: Font = pygame.font.Font(FONT_PATH, size=text_size)
         text_surf: Surface = text_font.render(text, True, text_color).convert_alpha()
-        text_rect: Rect = text_surf.get_rect(bottomright=text_right_pos)
+        text_rect: Rect = text_surf.get_rect(topleft=text_topleft_pos)
         self.window.blit(source=text_surf, dest=text_rect)

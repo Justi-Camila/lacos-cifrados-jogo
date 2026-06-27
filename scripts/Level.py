@@ -220,7 +220,7 @@ class Level:
                                 self.mostrar_erro = False
                                 self.resposta += event.unicode
 
-                    elif event.key == pygame.K_e and not self.enigma_aberto:
+                    elif event.key == pygame.K_e and not self.enigma_aberto and not self.goodend:
                         if player:
                             for ent in self.entity_list:
                                 if isinstance(ent, Jail):
