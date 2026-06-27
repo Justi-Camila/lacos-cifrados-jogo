@@ -49,7 +49,7 @@ class Level:
         self.npc_2 = pygame.image.load("./assets/images/NPC2.png").convert_alpha()
         self.badending = pygame.image.load("./assets/images/badending.png").convert_alpha()
         self.badend = False
-        self.goodending = pygame.image.load("./assets/images/menu.png").convert_alpha()
+        self.goodending = pygame.image.load("./assets/images/goodending.png").convert_alpha()
         self.goodend = False
         self.papel_aberto = False
         self.resposta = ""
@@ -73,7 +73,12 @@ class Level:
                 self.camera_x = 0
             else:
                 if player is None:
-                    self.badend = True
+                    if not self.badend:
+                        self.badend = True
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load("./assets/audio/bad-end-song.mp3")
+                        pygame.mixer.music.set_volume(0.5)
+                        pygame.mixer.music.play(-1)
                 else:
                     self.camera_x = player.rect.x - (WIN_WIDTH / 5)
 
@@ -111,8 +116,11 @@ class Level:
 
             if self.goodend:
                 self.window.blit(self.goodending, (0, 0))
-                self.text(20, "Obrigada por jogar", C_PURPLE, (WIN_WIDTH / 2, WIN_HEIGHT / 2))
-                self.text(15, "Aperte ESC para recomeçar", C_WHITE, (WIN_WIDTH/ 2, WIN_HEIGHT / 2 + 50))
+                self.text(30, "Obrigada por jogar", C_PURPLE, (WIN_WIDTH / 2, 100))
+                self.text(15, "Aperte ESC para recomeçar", C_WHITE, (WIN_WIDTH/ 2, 140))
+                self.final_text(10, "Imagens feitas no Pixel Studio", C_WHITE, (WIN_WIDTH - 180, 300))
+                self.final_text(10, "Audios pelo Freesound.org", C_WHITE, (WIN_WIDTH - 180, 320))
+                self.final_text(10, "Fonte pela dafont.com.br", C_WHITE, (WIN_WIDTH - 180, 340))
 
             if self.papel_aberto:
                 largura, altura = 500, 150
@@ -124,6 +132,8 @@ class Level:
                 for i, linha in enumerate(linhas):
                     self.text(14, linha, C_WHITE, (WIN_WIDTH / 2, y_inicial + (i * 22)))
 
+                self.text(11, "[ Aperte ESC para fechar ]", C_PURPLE, (WIN_WIDTH / 2, y_caixa + altura - 20))
+
             if self.enigma_aberto:
                 largura, altura = 500, 150
                 x_caixa = (WIN_WIDTH - largura) / 2
@@ -132,9 +142,11 @@ class Level:
                 self.text(14, self.enigma_aberto, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2))
 
                 if self.mostrar_erro:
-                    self.text(12, "Senha incorreta, tente novamente!!! (Aperte qualquer letra)", C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50))
+                    self.text(12, "Senha incorreta, tente novamente!!! (Aperte qualquer letra)", C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 30))
                 else:
-                    self.text(14, self.resposta, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50))
+                    self.text(14, self.resposta, C_WHITE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 + 30))
+
+                self.text(11, "[ Aperte ESC para fechar ]", C_PURPLE, (WIN_WIDTH / 2, y_caixa + altura - 20))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -169,11 +181,12 @@ class Level:
                             pygame.mixer.music.load("./assets/audio/ambient-game.mp3")
                             pygame.mixer.music.play(-1)
 
-                    if event.key == pygame.K_ESCAPE and self.badend or self.goodend:
+                    if event.key == pygame.K_ESCAPE and (self.badend or self.goodend):
                         return
 
+
                     # Evento de teclado do papel
-                    if (event.key == pygame.K_e or event.key == pygame.K_ESCAPE) and self.papel_aberto:
+                    if event.key == pygame.K_ESCAPE and self.papel_aberto:
                             self.papel_aberto = False
 
                     elif event.key == pygame.K_e and not self.papel_aberto:
@@ -185,7 +198,7 @@ class Level:
 
                     #Evento de teclado do enigma
                     if self.enigma_aberto:
-                        if event.key == pygame.K_e or event.key == pygame.K_ESCAPE:
+                        if event.key == pygame.K_ESCAPE:
                             self.enigma_aberto = False
                         elif event.key == K_BACKSPACE:
                             self.mostrar_erro = False
@@ -195,7 +208,10 @@ class Level:
                                 self.enigma_resolvido = True
                                 self.enigma_aberto = False
                                 self.goodend = True
-                                print("Acertou")
+                                pygame.mixer.music.stop()
+                                pygame.mixer.music.load("./assets/audio/good-end-song.mp3")
+                                pygame.mixer.music.set_volume(0.5)
+                                pygame.mixer.music.play(-1)
                             else:
                                 self.mostrar_erro = True
                                 self.resposta = ""
@@ -245,3 +261,9 @@ class Level:
             text_surf = font.render(line.strip(), True, color)
             self.window.blit(text_surf, (rect.left + padding, y_offset))
             y_offset += font.get_linesize() + 10
+
+    def final_text(self, text_size: int, text: str, text_color: tuple, text_left_pos: tuple):
+        text_font: Font = pygame.font.Font(FONT_PATH, size=text_size)
+        text_surf: Surface = text_font.render(text, True, text_color).convert_alpha()
+        text_rect: Rect = text_surf.get_rect(bottomleft=text_left_pos)
+        self.window.blit(source=text_surf, dest=text_rect)

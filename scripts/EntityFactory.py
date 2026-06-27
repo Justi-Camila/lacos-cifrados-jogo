@@ -31,21 +31,28 @@ class EntityFactory:
                 list_text = [
                     "Se quiser ver suas amigas inteiras novamente, \ndecifre o enigma. O relógio já está correndo. Não tente nos seguir.",
                     "PHILIA",
-                    "CIFRA DE CÉSAR +3 (A ➔ D, B ➔ E)"
+                    "CIFRA DE CÉSAR +3 (A -> D, B -> E)"
                 ]
                 posicao_x = 550
-                for i in range(2):
+                for i in range(3):
                     novo_paper = Paper("Paper", (posicao_x, 390), list_text[i])
                     list_papers.append(novo_paper)
-                    posicao_x += 3000
+                    posicao_x += 4050
                 return list_papers
 
             case "Trap":
                 list_traps = []
                 ponteiro_x = 650
-                for i in range(25):
+                posicoes_papeis = [550, 4600, 8650]
+                jaula = [9000]
+                for i in range(23):
                     posicao_aleatoria = random.randint(0, 150)
                     x_desta_trap = ponteiro_x + posicao_aleatoria
+
+                    while (any(abs(x_desta_trap - pos_papel) < 120 for pos_papel in posicoes_papeis) or
+                           any(abs(x_desta_trap - pos_jaula) < 120 for pos_jaula in jaula)):
+                        x_desta_trap += 150
+
                     nova_trap = Trap("Trap", (x_desta_trap, 390))
                     list_traps.append(nova_trap)
                     ponteiro_x = x_desta_trap + 250
@@ -54,9 +61,16 @@ class EntityFactory:
             case "Spider":
                 list_spiders = []
                 ponteiro_x = 700
-                for i in range(18):
+                posicoes_papeis = [550, 4600, 8650]
+                jaula = [9000]
+                for i in range(16):
                     posicao_aleatoria = random.randint(0, 200)
                     x_desta_trap = ponteiro_x + posicao_aleatoria
+
+                    while (any(abs(x_desta_trap - pos_papel) < 120 for pos_papel in posicoes_papeis) or
+                           any(abs(x_desta_trap - pos_jaula) < 120 for pos_jaula in jaula)):
+                        x_desta_trap += 150
+
                     nova_trap = Spider("Spider", (x_desta_trap, 390))
                     list_spiders.append(nova_trap)
                     ponteiro_x = x_desta_trap + 350

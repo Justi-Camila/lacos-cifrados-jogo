@@ -90,7 +90,8 @@ TUTORIAL = ("A - ESQUERDA",
             "D - DIREITA",
             "SPACE - PULAR",
             "E - INTERAGIR",
-            "ESC - SAIR")
+            "ESC - SAIR / VOLTAR",
+            "ENTER - INICIAR / CONFIRMAR")
 
 
 #W

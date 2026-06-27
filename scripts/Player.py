@@ -41,7 +41,6 @@ class Player(Entity):
             if self.rect.centery <= self.altura_max:
                 self.pulo = False
                 self.caindo = True
-                print("Caindooo")
 
         elif self.caindo:
             self.rect.centery += ENTITY_SPEED[self.name]
