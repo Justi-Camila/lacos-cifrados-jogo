@@ -94,8 +94,8 @@ class Level:
             if self.em_cutscene:
                 self.window.blit(self.campfire, (0, 0))
                 if self.contagem < 9:
-                    self.window.blit(self.npc_1, (WIN_WIDTH / 2 - 60, WIN_HEIGHT / 2 + 100))
-                    self.window.blit(self.npc_2, (WIN_WIDTH / 2 + 30, WIN_HEIGHT / 2 + 100))
+                    self.window.blit(self.npc_1, (WIN_WIDTH / 2 - 70, WIN_HEIGHT / 2 + 115))
+                    self.window.blit(pygame.transform.flip(self.npc_2, True, False), (WIN_WIDTH / 2 + 50, WIN_HEIGHT / 2 + 115))
 
                 rect = pygame.draw.rect(self.window, C_BLACK, (70, 70, 400, 100))
 
@@ -165,7 +165,7 @@ class Level:
 
                         if self.contagem >= len(CUTSCENE):
                             self.em_cutscene = False
-                            pygame.mixer.music.stop()
+                            pygame.mixer.stop()
                             pygame.mixer.music.load("./assets/audio/ambient-game.mp3")
                             pygame.mixer.music.play(-1)
 
@@ -212,8 +212,8 @@ class Level:
                                         self.enigma_aberto = ent.text
 
 
-            self.text(14, f"fps: {clock.get_fps():.0f}", C_WHITE, (100, WIN_HEIGHT - 35))
-            self.text(14, f"entidades: {len(self.entity_list)}", C_WHITE, (100, WIN_HEIGHT - 20))
+            # self.text(14, f"fps: {clock.get_fps():.0f}", C_WHITE, (100, WIN_HEIGHT - 35))
+            # self.text(14, f"entidades: {len(self.entity_list)}", C_WHITE, (100, WIN_HEIGHT - 20))
 
             EntityMediator.verify_collision(entity_list=self.entity_list)
             EntityMediator.verify_health(entity_list=self.entity_list)

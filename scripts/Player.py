@@ -1,6 +1,6 @@
 import pygame.key
 
-from scripts.Consts import ENTITY_SPEED, WIN_HEIGHT, C_WHITE
+from scripts.Consts import ENTITY_SPEED, C_WHITE
 from scripts.Entity import Entity, text_game
 
 
@@ -67,7 +67,7 @@ class Player(Entity):
 
 
     def render(self, window, camera_x, player=None):
-        text_game(window,14, f"Player - Health {self.health}", C_WHITE, (80, 20))
+        text_game(window,14, f"Millena - Health {self.health}", C_WHITE, (80, 20))
         window.blit(self.surf, (self.rect.x - camera_x, self.rect.y))
 
 

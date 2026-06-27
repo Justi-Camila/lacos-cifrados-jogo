@@ -29,9 +29,9 @@ class EntityFactory:
             case "Paper":
                 list_papers = []
                 list_text = [
-                    "Se quiser ver suas amigas inteiras novamente, \ndecifre o caminho. O relógio já está correndo. Não tente nos seguir.",
+                    "Se quiser ver suas amigas inteiras novamente, \ndecifre o enigma. O relógio já está correndo. Não tente nos seguir.",
                     "PHILIA",
-                    "CIFRA DE CÉSAR +3"
+                    "CIFRA DE CÉSAR +3 (A ➔ D, B ➔ E)"
                 ]
                 posicao_x = 550
                 for i in range(2):
