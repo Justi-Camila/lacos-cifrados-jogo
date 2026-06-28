@@ -90,6 +90,9 @@ class Level:
                         pass
                     else:
                         ent.move()
+
+                        if ent.rect.x > 9300:
+                            ent.rect.x = 9300
                 else:
                     ent.move()
 
