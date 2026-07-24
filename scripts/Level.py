@@ -86,7 +86,7 @@ class Level:
                 if isinstance(ent, Player):
                     if self.em_cutscene:
                         ent.rect.x = 140
-                    elif self.resposta or self.papel_aberto:
+                    elif self.papel_aberto:
                         pass
                     else:
                         ent.move()
@@ -109,6 +109,8 @@ class Level:
 
                 if self.contagem < len(CUTSCENE):
                     self.desenhar_texto(CUTSCENE[self.contagem], rect, self.fonte_dialogo, C_WHITE)
+
+                self.text(11, "[ Aperte E para interagir ]", C_PURPLE, (WIN_WIDTH / 2, WIN_HEIGHT / 2 - 100))
 
 
             if self.badend:
